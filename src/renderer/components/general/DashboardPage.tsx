@@ -34,10 +34,19 @@ import {
   autoBackupState,
   chapterLanguagesState,
   refreshOnStartState,
+  OnStartDownloadUnreadCountState,
+  OnStartUpDeleteReadState,
+  OnStartUpDownloadUnreadState,
+  customDownloadsDirState,
 } from '@/renderer/state/settingStates';
 import DashboardSidebarLink from './DashboardSidebarLink';
 import { downloadCover } from '@/renderer/util/download';
 import { createAutoBackup } from '@/renderer/util/backup';
+import {
+  DeleteReadChapters,
+  DownloadUnreadChapters,
+} from '@/renderer/features/library/chapterDownloadUtils';
+import { getDefaultDownloadDir } from '../settings/GeneralSettings';
 
 interface Props {}
 
@@ -54,6 +63,11 @@ const DashboardPage: React.FC<Props> = () => {
   const [importing, setImporting] = useRecoilState(importingState);
   const categoryList = useRecoilValue(categoryListState);
 
+  const OnStartUpDownloadUnread = useRecoilValue(OnStartUpDownloadUnreadState);
+  const OnStartUpDownloadUnreadCount = useRecoilValue(OnStartDownloadUnreadCountState);
+  const OnStartUpDeleteRead = useRecoilValue(OnStartUpDeleteReadState);
+  const customDownloadsDir = useRecoilValue(customDownloadsDirState);
+
   useEffect(() => {
     if (autoBackup) {
       createAutoBackup(autoBackupCount);
@@ -66,7 +80,27 @@ const DashboardPage: React.FC<Props> = () => {
         setReloadingSeriesList,
         chapterLanguages,
         categoryList,
-      ).catch((e) => console.error(e));
+      )
+        .then(() => {
+          if (OnStartUpDeleteRead) {
+            DeleteReadChapters(
+              library.fetchSeriesList(),
+              customDownloadsDir || String(getDefaultDownloadDir()),
+            );
+          }
+          if (OnStartUpDownloadUnread) {
+            DownloadUnreadChapters(
+              library.fetchSeriesList(),
+              customDownloadsDir || String(getDefaultDownloadDir()),
+              chapterLanguages,
+              false,
+              OnStartUpDownloadUnreadCount,
+            );
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     }
   }, [activeSeriesList]);
 
