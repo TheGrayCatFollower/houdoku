@@ -126,7 +126,6 @@ export async function DownloadUnreadChapters(
               .sort((a, b) => parseFloat(a.chapterNumber) - parseFloat(b.chapterNumber))
               .slice(0, count);
 
-            console.log(serieChapters)
             const nonDownloadedChapters = await Promise.all(
               serieChapters.map(async (x) => {
                 const r = await ipcRenderer.invoke(
