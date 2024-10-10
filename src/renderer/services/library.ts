@@ -119,15 +119,10 @@ const validURL = (str: string): boolean => {
   return !!pattern.test(str);
 };
 
-const validFilePath = async (str: string): Promise<boolean> => {
+const validFilePath = async (path: string): Promise<boolean> => {
   return new Promise((resolve) => {
-    fs.access(str, fs.constants.F_OK, (err) => {
-      if (err) {
-        resolve(false);
-      } else {
-        resolve(true);
-      }
-    });
+    const validPathPattern = /^(\/[a-zA-Z0-9_-]+)+\/?$/;
+    resolve(validPathPattern.test(path));
   });
 };
 

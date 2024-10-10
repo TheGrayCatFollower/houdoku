@@ -1,9 +1,9 @@
 import { Chapter, LanguageKey, Series } from '@tiyo/common';
 import { downloaderClient, DownloadTask } from '@/renderer/services/downloader';
-import { deleteDownloadedChapter, getChapterDownloaded, getChaptersDownloaded } from '@/main/util/filesystem';
 import library from '@/renderer/services/library';
 const { ipcRenderer } = require('electron');
 import ipcChannels from '@/common/constants/ipcChannels.json';
+
 
 
 export async function downloadNextX(
@@ -115,29 +115,28 @@ export async function DownloadUnreadChapters(
   notification = true,
   count = 1
 ) {
-  seriesList
-    .filter((series) => series.numberUnread > 0 && series.id)
+  seriesList.filter((series) => series.numberUnread > 0 && series.id)
     .forEach(async (series) => {
-      library
-        .validFilePath(series.sourceId)
+      library.validFilePath(series.sourceId)
         .then(async (result) => {
           if (result === false) {
-            const serieChapters = library
-              .fetchChapters(series.id!)
+            const serieChapters = library.fetchChapters(series.id!)
               .filter((x) => !x.read)
               .filter((x) => chapterLanguages.includes(x.languageKey))
               .sort((a, b) => parseFloat(a.chapterNumber) - parseFloat(b.chapterNumber))
               .slice(0, count);
 
+            console.log(serieChapters)
             const nonDownloadedChapters = await Promise.all(
               serieChapters.map(async (x) => {
-                const r = await getChapterDownloaded(series, x, downloadsDir);
+                const r = await ipcRenderer.invoke(
+                  ipcChannels.FILESYSTEM.GET_CHAPTER_DOWNLOADED,series, x, downloadsDir
+                );
                 return r !== true ? x : null;
               })
             );
 
             const filteredNonDownloadedChapters = nonDownloadedChapters.filter(Boolean);
-
             downloaderClient.add(
               filteredNonDownloadedChapters.map(
                 (chapter) =>
@@ -148,6 +147,7 @@ export async function DownloadUnreadChapters(
                   } as DownloadTask)
               )
             );
+
             downloaderClient.start(notification);
             await new Promise((resolve) => setTimeout(resolve, 1000));
           }
@@ -173,12 +173,16 @@ export async function DeleteReadChapters(seriesList: Series[], downloadsDir: str
     .forEach(async (series) => {
       const serieChapters = library.fetchChapters(series.id!).filter((x) => x.read);
 
-      const downloadedChapters = await getChaptersDownloaded(series, serieChapters, downloadsDir);
-
+      const downloadedChapters = await ipcRenderer.invoke(
+        ipcChannels.FILESYSTEM.GET_CHAPTERS_DOWNLOADED,
+        series,
+        serieChapters,
+        downloadsDir
+      );
       const DownloadedChapters = serieChapters.filter((chapter) => downloadedChapters[chapter.id!]);
 
       DownloadedChapters.forEach((x) => {
-        deleteDownloadedChapter(series, x, downloadsDir);
+        ipcRenderer.invoke(ipcChannels.FILESYSTEM.DELETE_DOWNLOADED_CHAPTER , series , x, downloadsDir);
       });
     });
 }
