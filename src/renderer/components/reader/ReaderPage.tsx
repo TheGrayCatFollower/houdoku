@@ -17,7 +17,6 @@ import ReaderLoader from './ReaderLoader';
 import { sendProgressToTrackers } from '@/renderer/features/tracker/utils';
 import ipcChannels from '@/common/constants/ipcChannels.json';
 import { FS_METADATA } from '@/common/temp_fs_metadata';
-import { getChapterDownloaded, getChapterDownloadPath } from '@/renderer/util/filesystem';
 import library from '@/renderer/services/library';
 import { updateTitlebarText } from '@/renderer/util/titlebar';
 import * as libraryStates from '@/renderer/state/libraryStates';
