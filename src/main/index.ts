@@ -120,6 +120,8 @@ app.on('window-all-closed', () => {
   }
 });
 
+const { URL, pathToFileURL } = require('url');
+
 app
   .whenReady()
   .then(async () => {
@@ -129,13 +131,36 @@ app
     createExtensionIpcHandlers(ipcMain, spoofWindow!);
     loadPlugins(spoofWindow!);
 
-    protocol.handle('atom', (req) => {
-      const { pathname } = new URL(req.url);
-      return net.fetch(`file://${pathname}`, {
-        method: req.method,
-        headers: req.headers,
-        body: req.body,
-      });
+    protocol.handle('atom', async (req) => {
+      try {
+        const requestUrl = new URL(req.url);
+        let pathname;
+
+        if (process.platform === 'win32') {
+          // Construct Windows file path
+          let driveLetter = requestUrl.host.endsWith(':') ? requestUrl.host : requestUrl.host + ':';
+          pathname = decodeURIComponent(`${driveLetter}${requestUrl.pathname}`);
+
+          if (!/^[a-zA-Z]:\//.test(pathname)) {
+            throw new Error('Invalid path format');
+          }
+        } else {
+          // Construct path for non-Windows platforms
+          pathname = decodeURIComponent(requestUrl.pathname);
+        }
+
+        const fileUrl = `file:///${pathname}`;
+        const response = await net.fetch(fileUrl, {
+          method: req.method,
+          headers: req.headers,
+          body: req.body,
+        });
+
+        return response;
+      } catch (error) {
+        console.error('Error fetching the file:', error);
+        throw error;
+      }
     });
   })
   .catch(console.error);

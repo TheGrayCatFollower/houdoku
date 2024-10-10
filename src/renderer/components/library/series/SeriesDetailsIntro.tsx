@@ -34,7 +34,7 @@ const SeriesDetailsIntro: React.FC<Props> = (props: Props) => {
   return (
     <Grid columns={24} gutter="xs">
       <Grid.Col span={5}>
-        <Image src={getThumbnailPath()} alt={props.series.title} width="100%" mt="-50%" />
+        <Image src={getThumbnailPath().replaceAll('\\', '/')} alt={props.series.title} width="100%" mt="-50%" />
       </Grid.Col>
       <Grid.Col span={19}>
         <Group justify="space-between" mt="xs" mb="xs" align="center" wrap="nowrap">

@@ -174,7 +174,7 @@ const LibraryGrid: React.FC<Props> = (props: Props) => {
                           {series.title}
                         </Title>
                         <Overlay
-                          h={'calc(100% - 7px)'}
+                          h={'calc(100%)'}
                           gradient="linear-gradient(0deg, #000000cc, #00000000 40%, #00000000)"
                           zIndex={5}
                         />
