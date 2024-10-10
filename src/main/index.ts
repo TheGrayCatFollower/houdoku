@@ -120,7 +120,7 @@ app.on('window-all-closed', () => {
   }
 });
 
-const { URL, pathToFileURL } = require('url');
+const { URL} = require('url');
 
 app
   .whenReady()
