@@ -1,3 +1,4 @@
+// electron.vite.config.ts
 import path from 'path';
 import { defineConfig, externalizeDepsPlugin, bytecodePlugin } from 'electron-vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
@@ -7,14 +8,14 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin(), bytecodePlugin()],
     resolve: {
       alias: {
-        '@/': path.join(__dirname, 'src/'),
+        '@': path.join(__dirname, 'src'),
       },
     },
   },
   preload: {
     resolve: {
       alias: {
-        '@/': path.join(__dirname, 'src/'),
+        '@': path.join(__dirname, 'src'),
       },
     },
   },
@@ -26,7 +27,7 @@ export default defineConfig({
     ],
     resolve: {
       alias: {
-        '@/': path.join(__dirname, 'src/'),
+        '@': path.join(__dirname, 'src'),
       },
     },
   },
