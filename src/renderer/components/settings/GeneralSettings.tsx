@@ -11,7 +11,6 @@ import {
   NumberInput,
   Stack,
   Text,
-  Tooltip,
   Accordion,
 } from '@mantine/core'; // Combining imports from both branches
 import { IconArrowBack } from '@tabler/icons';
@@ -250,7 +249,7 @@ const GeneralSettings: React.FC<Props> = () => {
         <Accordion.Item value="download">
           <Accordion.Control>Auto Download</Accordion.Control>
           <Accordion.Panel>
-            <Stack py="xs" ml="md" spacing={4}>
+            <Stack py="xs" ml="md" gap={4}>
               <Checkbox
                 label="Download unread chapters upon startup"
                 size="md"
@@ -301,7 +300,7 @@ const GeneralSettings: React.FC<Props> = () => {
         <Accordion.Item value="delete">
           <Accordion.Control>Auto Delete</Accordion.Control>
           <Accordion.Panel>
-            <Stack py="xs" ml="md" spacing={4}>
+            <Stack py="xs" ml="md" gap={4}>
               <Checkbox
                 label="Delete read chapters upon startup"
                 size="md"
