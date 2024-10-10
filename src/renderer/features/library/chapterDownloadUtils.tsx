@@ -1,6 +1,6 @@
 import { Chapter, LanguageKey, Series } from '@tiyo/common';
 import { downloaderClient, DownloadTask } from '@/renderer/services/downloader';
-import { deleteDownloadedChapter, getChapterDownloaded, getChaptersDownloaded } from '@/renderer/util/filesystem';
+import { deleteDownloadedChapter, getChapterDownloaded, getChaptersDownloaded } from '@/main/util/filesystem';
 import library from '@/renderer/services/library';
 const { ipcRenderer } = require('electron');
 import ipcChannels from '@/common/constants/ipcChannels.json';
@@ -77,7 +77,6 @@ export async function downloadAll(
   );
   const chaptersToDownload = queue.filter((chapter) => chapter !== undefined);
   const sortedQueue = chaptersToDownload.sort(
-    // @ts-expect-error undefined filterd out ^
     (a, b) => parseFloat(a.chapterNumber) - parseFloat(b.chapterNumber),
   ) as Chapter[];
 
