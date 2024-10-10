@@ -191,8 +191,9 @@ export async function downloadThumbnail(thumbnailPath: string, data: string | Bl
 
   fetch(url)
     .then((response) => response.arrayBuffer())
-    .then((buffer) => {
-      fs.writeFile(thumbnailPath, Buffer.from(buffer), (err: Error | null) => {
+    .then((arrayBuffer) => {
+      const buffer = Buffer.from(arrayBuffer);
+      fs.writeFile(thumbnailPath, new Uint8Array(buffer), (err: Error | null) => {
         if (err) {
           console.error(err);
         }
@@ -200,6 +201,7 @@ export async function downloadThumbnail(thumbnailPath: string, data: string | Bl
     })
     .catch((e: Error) => console.error(e));
 }
+
 
 /**
  * Delete a series thumbnail from the filesystem.

@@ -9,7 +9,7 @@
     "build": "electron-vite build",
     "preview": "electron-vite preview",
     "lint": "eslint src --cache --ext .js,.jsx,.ts,.tsx",
-    "package": "yarn build && yarn electron-builder --publish onTagOrDraft --win --mac --linux"
+    "package": "yarn build && yarn electron-builder --win"
   },
   "build": {
     "productName": "Houdoku",
@@ -116,7 +116,7 @@
     "core-js": "^3.20.0",
     "discord-rpc": "^4.0.1",
     "electron": "^30.0.2",
-    "electron-builder": "^24.6.4",
+    "electron-builder": "^25.1.7",
     "electron-vite": "^2.2.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^8.3.0",
