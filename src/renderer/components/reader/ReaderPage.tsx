@@ -17,11 +17,15 @@ import ReaderLoader from './ReaderLoader';
 import { sendProgressToTrackers } from '@/renderer/features/tracker/utils';
 import ipcChannels from '@/common/constants/ipcChannels.json';
 import { FS_METADATA } from '@/common/temp_fs_metadata';
+import { getChapterDownloaded, getChapterDownloadPath } from '@/renderer/util/filesystem';
 import library from '@/renderer/services/library';
 import { updateTitlebarText } from '@/renderer/util/titlebar';
 import * as libraryStates from '@/renderer/state/libraryStates';
 import * as readerStates from '@/renderer/state/readerStates';
 import * as settingStates from '@/renderer/state/settingStates';
+import { DownloadUnreadChapters } from '@/renderer/features/library/chapterDownloadUtils';
+import { getDefaultDownloadDir } from '@/renderer/components/settings/GeneralSettings';
+
 import {
   nextOffsetPages,
   nextPageStyle,
@@ -98,6 +102,14 @@ const ReaderPage: React.FC<Props> = () => {
   const keyToggleFullscreen = useRecoilValue(settingStates.keyToggleFullscreenState);
   const keyExit = useRecoilValue(settingStates.keyExitState);
   const keyCloseOrBack = useRecoilValue(settingStates.keyCloseOrBackState);
+  const OnStartUpDownloadUnreadCount = useRecoilValue(
+    settingStates.OnStartDownloadUnreadCountState
+  );
+  const OnScrollingChaptersDownloadUnread = useRecoilValue(
+    settingStates.OnScrollingChaptersDownloadUnreadState
+  );
+
+  const seriesArr: Series[] = new Array(1);
 
   /**
    * Populate the relevantChapterList prop.
@@ -327,6 +339,16 @@ const ReaderPage: React.FC<Props> = () => {
     if (newChapterId === null) return false;
     const desiredPage = fromPageMovement && previous ? Infinity : 1;
     setChapter(newChapterId, desiredPage);
+    seriesArr[0] = library.fetchSeries(series_id!)!;
+    if (OnScrollingChaptersDownloadUnread) {
+      DownloadUnreadChapters(
+        seriesArr,
+        customDownloadsDir || String(getDefaultDownloadDir()),
+        chapterLanguages,
+        false,
+        OnStartUpDownloadUnreadCount
+      );
+    }
     return true;
   };
 

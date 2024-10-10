@@ -98,6 +98,13 @@ export enum GeneralSetting {
   ChapterListVolOrder = 'ChapterListVolOrder',
   ChapterListChOrder = 'ChapterListChOrder',
   ChapterListPageSize = 'ChapterListPageSize',
+
+  OnStartUpDownloadUnread = 'OnStartUpDownloadUnread',
+  OnSeriesDetailsDownloadUnread = 'OnSeriesDetailsDownloadUnread',
+  OnScrollingChaptersDownloadUnread = 'OnScrollingChaptersDownloadUnread',
+  OnStartUpDownloadUnreadCount = 'OnStartUpDownloadUnreadCount',
+  OnStartUpDeleteRead = 'OnStartUpDeleteRead',
+  OnSeriesDetailsDeleteRead = 'OnSeriesDetailsDeleteRead',
 }
 
 export enum ProgressFilter {
@@ -239,6 +246,13 @@ export const SettingTypes = {
   [TrackerSetting.TrackerAutoUpdate]: SettingType.BOOLEAN,
 
   [IntegrationSetting.DiscordPresenceEnabled]: SettingType.BOOLEAN,
+
+  [GeneralSetting.OnStartUpDownloadUnread]: SettingType.BOOLEAN,
+  [GeneralSetting.OnSeriesDetailsDownloadUnread]: SettingType.BOOLEAN,
+  [GeneralSetting.OnScrollingChaptersDownloadUnread]: SettingType.BOOLEAN,
+  [GeneralSetting.OnStartUpDownloadUnreadCount]: SettingType.NUMBER,
+  [GeneralSetting.OnStartUpDeleteRead]: SettingType.BOOLEAN,
+  [GeneralSetting.OnSeriesDetailsDeleteRead]: SettingType.BOOLEAN,
 };
 
 export const DefaultSettings = {
@@ -293,4 +307,11 @@ export const DefaultSettings = {
   [TrackerSetting.TrackerAutoUpdate]: true,
 
   [IntegrationSetting.DiscordPresenceEnabled]: false,
+
+  [GeneralSetting.OnStartUpDownloadUnread]: false,
+  [GeneralSetting.OnSeriesDetailsDownloadUnread]: false,
+  [GeneralSetting.OnScrollingChaptersDownloadUnread]: false,
+  [GeneralSetting.OnStartUpDownloadUnreadCount]: 0,
+  [GeneralSetting.OnStartUpDeleteRead]: false,
+  [GeneralSetting.OnSeriesDetailsDeleteRead]: false,
 };

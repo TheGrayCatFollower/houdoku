@@ -97,7 +97,7 @@ class DownloaderClient {
     this.setDownloadErrors([...this.downloadErrors, downloadError]);
   };
 
-  start = async () => {
+  start = async (notification = true) => {
     if (this.running) return;
 
     if (this.queue.length === 0) {
@@ -107,7 +107,9 @@ class DownloaderClient {
 
     const startingQueueSize = this.queue.length;
     const notificationId = uuidv4();
-    showNotification({ id: notificationId, message: 'Starting download...', loading: true });
+    if (notification) {
+      showNotification({ id: notificationId, message: 'Starting download...', loading: true });
+    }
 
     this.setRunning(true);
     let tasksCompleted = 0;
