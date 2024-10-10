@@ -1,6 +1,5 @@
 import { Chapter, Series } from '@tiyo/common';
 import { v4 as uuidv4 } from 'uuid';
-import fs from 'fs';
 import persistantStore from '../util/persistantStore';
 import storeKeys from '@/common/constants/storeKeys.json';
 import { Category } from '@/common/models/types';
