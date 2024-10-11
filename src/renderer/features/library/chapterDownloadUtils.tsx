@@ -115,6 +115,7 @@ export async function DownloadUnreadChapters(
   notification = true,
   count = 1
 ) {
+  console.log(seriesList);
   seriesList.filter((series) => series.numberUnread > 0 && series.id)
     .forEach(async (series) => {
       library.validFilePath(series.sourceId)
