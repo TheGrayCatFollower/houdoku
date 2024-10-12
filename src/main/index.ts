@@ -23,6 +23,7 @@ import { createDiscordIpcHandlers } from './services/discord';
 import { createUpdaterIpcHandlers } from './services/updater';
 import { DEFAULT_DOWNLOADS_DIR, LOGS_DIR, PLUGINS_DIR, THUMBNAILS_DIR } from './util/appdata';
 import { createFilesystemIpcHandlers } from './services/filesystem';
+import crypto from 'crypto';
 
 if (process.platform === 'win32') {
   app.setPath('userData', path.join(path.dirname(app.getPath('exe')), 'data'));
@@ -251,20 +252,27 @@ ipcMain.handle(ipcChannels.APP.READ_ENTIRE_FILE, (_event, filepath: string) => {
   return fs.readFileSync(filepath).toString();
 });
 
-ipcMain.handle(ipcChannels.APP.VALIDATE_FILE_PATH, async (_event, filePath: string) => {
+ipcMain.handle(ipcChannels.APP.VALIDATE_FILE_PATH, (_event, filePath) => {
   return new Promise((resolve) => {
     fs.access(filePath, fs.constants.F_OK, (err) => {
       if (err) {
-        resolve(false);
+        resolve(false); // File does not exist or is not accessible
       } else {
         resolve(true);
       }
     });
   });
 });
+
 ipcMain.handle(ipcChannels.APP.COPY_TO_CLIPBOARD , (_event , text:string) => {
   clipboard.writeText(text);
 });
+
+ipcMain.handle(ipcChannels.APP.GENERATE_HASH , (_event , url:string) => {
+  const hash = crypto.createHash('md5').update(url).digest('hex');
+  return hash;
+});
+
 
 if (process.platform === 'win32') {
   app.commandLine.appendSwitch('high-dpi-support', '1');

@@ -11,7 +11,8 @@
     "READ_ENTIRE_FILE": "read-entire-file",
     "CREATE_OBJECT_URL": "create-object-url",
     "COPY_TO_CLIPBOARD": "copy-to-clipboard",
-    "VALIDATE_FILE_PATH" : "validate-file-path"
+    "VALIDATE_FILE_PATH" : "validate-file-path",
+    "GENERATE_HASH" : "generate-md5-hash"
   },
   "WINDOW": {
     "MINIMIZE": "window-minimize",
@@ -48,7 +49,8 @@
     "GET_SETTING_TYPES": "extension-getSettingTypes",
     "GET_SETTINGS": "extension-getSettings",
     "SET_SETTINGS": "extension-setSettings",
-    "GET_FILTER_OPTIONS": "extension-getFilterOptions"
+    "GET_FILTER_OPTIONS": "extension-getFilterOptions",
+    "COPY_TO_CLIPBOARD": "copy-to-clipboard"
   },
   "FILESYSTEM": {
     "GET_CHAPTER_DOWNLOAD_PATH": "filesystem-get-chapter-download-path",

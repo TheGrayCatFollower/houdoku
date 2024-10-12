@@ -23,6 +23,12 @@ import {
   pageWidthMetricState,
 } from '@/renderer/state/settingStates';
 import ExtensionImage from '../general/ExtensionImage';
+import * as ContextMenu from '@radix-ui/react-context-menu';
+import crypto from 'crypto';
+const { ipcRenderer } = require('electron');
+import ipcChannels from '@/common/constants/ipcChannels.json';
+import { v4 as uuidv4 } from 'uuid';
+import { showNotification, updateNotification } from '@mantine/notifications';
 
 const ROOT_ID = 'root';
 
@@ -82,19 +88,37 @@ const ReaderViewer: React.FC<Props> = (props: Props) => {
       }
     }
 
+    const copyToClipboard = (str: string, message: string) => {
+      ipcRenderer.invoke(ipcChannels.APP.COPY_TO_CLIPBOARD, str).finally(() => {
+        const notificationId = uuidv4();
+        showNotification({
+          id: notificationId,
+          message: (message),
+          loading: false,
+          autoClose: true,
+        });
+      });
+    };
+
+    const generateMD5Hash = async (url: string) => {
+      return ipcRenderer.invoke(ipcChannels.APP.GENERATE_HASH, url);
+    };
+
     return (
-      <ExtensionImage
-        // @ts-expect-error ignoring ensured series prop in this context
-        series={series}
-        key={num}
-        data-num={num}
-        url={pageUrls[num - 1]}
-        alt={`Page ${num}`}
-        style={showing ? {} : { display: 'none' }}
-        loadingDisplay="spinner"
-        allowRetry
-        onLoad={props.updatePageGroupList}
-        className={`
+      <ContextMenu.Root key={`${num}}`}>
+        <ContextMenu.Trigger className={styles.ContextMenuTrigger}>
+          <ExtensionImage
+            // @ts-expect-error ignoring ensured series prop in this context
+            series={series}
+            key={num}
+            data-num={num}
+            url={pageUrls[num - 1]}
+            alt={`Page ${num}`}
+            style={showing ? {} : { display: 'none' }}
+            loadingDisplay="spinner"
+            allowRetry
+            onLoad={props.updatePageGroupList}
+            className={`
       ${styles.pageImage}
       ${optimizeContrast ? styles.optimizeContrast : ''}
       ${isLeft ? styles.left : ''}
@@ -102,13 +126,51 @@ const ReaderViewer: React.FC<Props> = (props: Props) => {
       ${fitContainToWidth ? styles.containWidth : ''}
       ${fitContainToHeight ? styles.containHeight : ''}
       ${fitStretch && (fitContainToWidth || fitContainToHeight) ? styles.grow : ''}
-      ${
-        (pageStyle === PageStyle.Double || pageStyle === PageStyle.LongStrip) && pageGap
-          ? styles.gap
-          : ''
-      }
+      ${(pageStyle === PageStyle.Double || pageStyle === PageStyle.LongStrip) && pageGap
+                ? styles.gap
+                : ''
+              }
     `}
-      />
+          />
+        </ContextMenu.Trigger>
+
+        <ContextMenu.Portal>
+          <ContextMenu.Content
+            className={styles.ctxMenuContent}
+            style={{ width: 220 }}
+          >
+            {
+              <>
+                <ContextMenu.Item
+                  style={{ paddingLeft: 25 }}
+                  className={styles.ctxMenuItem}
+                  onClick={() => copyToClipboard(pageUrls[num - 1], "URL saved to clipboard")}
+
+                >
+                  Copy image url
+                </ContextMenu.Item>
+
+                <ContextMenu.Item
+                  style={{ paddingLeft: 25 }}
+                  className={styles.ctxMenuItem}
+                  onClick={() => {
+                    generateMD5Hash(pageUrls[num - 1]).then(value => {
+                      copyToClipboard(value, "Hash saved to clipboard");
+                    })
+                  }}
+                >
+                  Copy image hash
+                </ContextMenu.Item>
+
+
+              </>
+
+            }
+
+          </ContextMenu.Content>
+        </ContextMenu.Portal>
+      </ContextMenu.Root>
+
     );
   };
 
@@ -200,9 +262,9 @@ const ReaderViewer: React.FC<Props> = (props: Props) => {
               childNum = 0;
               childNum < viewerContainer.current.children.length &&
               imageHeightSum <
-                root.scrollTop +
-                  root.clientHeight -
-                  parseInt(getComputedStyle(readerPage).marginTop, 10);
+              root.scrollTop +
+              root.clientHeight -
+              parseInt(getComputedStyle(readerPage).marginTop, 10);
               childNum += 1
             ) {
               imageHeightSum += viewerContainer.current.children[childNum].clientHeight;

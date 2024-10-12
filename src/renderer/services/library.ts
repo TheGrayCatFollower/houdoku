@@ -3,9 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import persistantStore from '../util/persistantStore';
 import storeKeys from '@/common/constants/storeKeys.json';
 import { Category } from '@/common/models/types';
-import { ipcRenderer } from 'electron';
 import ipcChannels from '@/common/constants/ipcChannels.json';
-
+const { ipcRenderer } = require('electron');
 
 const fetchSeriesList = (): Series[] => {
   const val = persistantStore.read(`${storeKeys.LIBRARY.SERIES_LIST}`);

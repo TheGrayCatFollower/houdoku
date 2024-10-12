@@ -143,7 +143,6 @@ const LibraryGrid: React.FC<Props> = (props: Props) => {
       <SimpleGrid cols={libraryColumns} spacing="xs">
         {props.getFilteredList().map((series: Series) => {
           const coverSource = getImageSource(series).replaceAll('\\', '/');
-
           return (
             <ContextMenu.Root key={`${series.id}-${series.title}`}>
               <ContextMenu.Trigger className={styles.ContextMenuTrigger}>
