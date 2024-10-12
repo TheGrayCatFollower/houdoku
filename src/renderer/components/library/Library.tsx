@@ -20,6 +20,7 @@ import {
 } from '@/renderer/state/settingStates';
 import LibraryGrid from './LibraryGrid';
 import RemoveSeriesModal from './RemoveSeriesModal';
+import MarkModal from './MarkModal'
 import LibraryList from './LibraryList';
 import library from '@/renderer/services/library';
 import EditCategoriesModal from './EditCategoriesModal';
@@ -28,7 +29,11 @@ type Props = unknown;
 
 const Library: React.FC<Props> = () => {
   const [removeModalShowing, setRemoveModalShowing] = useState(false);
+  const [markModalShowing, setMarkModalShowing] = useState(false);
+
   const [removeModalSeries, setRemoveModalSeries] = useState<Series | null>(null);
+  const [markModalSeries , setMarkModalSeries] = useState<Series | null>(null);
+
   const [editCategoriesModalShowing, setEditCategoriesModalShowing] = useState(false);
   const activeSeriesList = useRecoilValue(activeSeriesListState);
   const filter = useRecoilValue(filterState);
@@ -100,6 +105,11 @@ const Library: React.FC<Props> = () => {
           showing={editCategoriesModalShowing}
           close={() => setEditCategoriesModalShowing(false)}
         />
+        <MarkModal
+          series={markModalSeries}
+          showing={markModalShowing}
+          close={() => setMarkModalShowing(false)}
+        />
 
         {libraryView === LibraryView.List ? (
           <LibraryList
@@ -115,6 +125,10 @@ const Library: React.FC<Props> = () => {
             showRemoveModal={(series) => {
               setRemoveModalSeries(series);
               setRemoveModalShowing(true);
+            }}
+            showMarkModal={(series) => {
+              setMarkModalSeries(series);
+              setMarkModalShowing(true);
             }}
           />
         )}

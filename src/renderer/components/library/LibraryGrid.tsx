@@ -38,6 +38,7 @@ if (!fs.existsSync(thumbnailsDir)) {
 type Props = {
   getFilteredList: () => Series[];
   showRemoveModal: (series: Series) => void;
+  showMarkModal: (series: Series) => void;
 };
 
 const LibraryGrid: React.FC<Props> = (props: Props) => {
@@ -53,11 +54,6 @@ const LibraryGrid: React.FC<Props> = (props: Props) => {
   const confirmRemoveSeries = useRecoilValue(confirmRemoveSeriesState);
   const [categoriesSubMenuOpen, setCategoriesSubMenuOpen] = useState(false);
 
-  // const [markFromToModalOpen, setMarkFromToModalOpen] = useState(false);
-  // const [currentSeries, setCurrentSeries] = useState<Series | null>(null);
-  // const [fromChapter, setFromChapter] = useState<number>(1);
-  // const [toChapter, setToChapter] = useState<number>(1);
-
   const viewFunc = (series: Series) => {
     goToSeries(series, setSeriesList, navigate);
   };
@@ -70,26 +66,16 @@ const LibraryGrid: React.FC<Props> = (props: Props) => {
     }
   };
 
-  const markFromToFunc = (series: Series , from: number , to: number) => {
-    if (series.id) {
-      const chapters = library.fetchChapters(series.id);
-
-      const filteredChapters = chapters.filter((chapter) => {
-        const chapterNumber = parseFloat(chapter.chapterNumber);
-        return chapterNumber >= from && chapterNumber <= to;
-      });
-      
-      markChapters(filteredChapters , series , true , setChapterList , setSeries , chapterLanguages);
-      setSeriesList(library.fetchSeriesList());
-    }
-  };
-
   const removeFunc = (series: Series) => {
     if (confirmRemoveSeries) {
       props.showRemoveModal(series);
     } else {
       removeSeries(series, setSeriesList);
     }
+  };
+
+  const markFunc = (series: Series) => {
+    props.showMarkModal(series);
   };
 
   const handleToggleCategory = (series: Series, categoryId: string) => {
@@ -222,6 +208,13 @@ const LibraryGrid: React.FC<Props> = (props: Props) => {
                     onClick={() => markAllReadFunc(series)}
                   >
                     Mark all Read
+                  </ContextMenu.Item>
+                  <ContextMenu.Item
+                    style={{ paddingLeft: 25 }}
+                    className={styles.ctxMenuItem}
+                    onClick={() => markFunc(series)}
+                  >
+                    Mark (from , to)
                   </ContextMenu.Item>
                   <ContextMenu.Item
                     className={styles.ctxMenuItem}
