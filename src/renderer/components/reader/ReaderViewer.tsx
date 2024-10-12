@@ -144,7 +144,7 @@ const ReaderViewer: React.FC<Props> = (props: Props) => {
                 <ContextMenu.Item
                   style={{ paddingLeft: 25 }}
                   className={styles.ctxMenuItem}
-                  onClick={() => copyToClipboard(pageUrls[num - 1], "URL saved to clipboard")}
+                  onClick={() => copyToClipboard(pageUrls[num - 1], "Url saved to clipboard")}
 
                 >
                   Copy image url

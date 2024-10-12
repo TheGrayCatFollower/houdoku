@@ -66,7 +66,6 @@ function consolidateAndSortChapters(chapterList: Chapter[]): Chapter[] {
     if (chapter === undefined) {
       [chapter] = groupedChapters;
     }
-
     if (Number.isInteger(parseFloat(chapter.chapterNumber)))
       chapters.push(chapter);
   });
@@ -90,6 +89,7 @@ export function getNumberUnreadChapters(chapterList: Chapter[]): number {
   let cumulativeGaps = 1;
 
   const chapters = consolidateAndSortChapters(chapterList);
+  console.log(chapters);
 
   chapters.forEach((chapter: Chapter, index: number) => {
     let absoluteNumber = cumulativeGaps + index;
