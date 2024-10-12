@@ -11,6 +11,7 @@ import {
   ipcMain,
   dialog,
   OpenDialogReturnValue,
+  clipboard ,
 } from 'electron';
 import log from 'electron-log';
 import { walk } from '@/main/util/filesystem';
@@ -248,6 +249,21 @@ ipcMain.handle(ipcChannels.APP.READ_ENTIRE_FILE, (_event, filepath: string) => {
   console.info(`Reading entire file: ${filepath}`);
 
   return fs.readFileSync(filepath).toString();
+});
+
+ipcMain.handle(ipcChannels.APP.VALIDATE_FILE_PATH, async (_event, filePath: string) => {
+  return new Promise((resolve) => {
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+      if (err) {
+        resolve(false);
+      } else {
+        resolve(true);
+      }
+    });
+  });
+});
+ipcMain.handle(ipcChannels.APP.COPY_TO_CLIPBOARD , (_event , text:string) => {
+  clipboard.writeText(text);
 });
 
 if (process.platform === 'win32') {

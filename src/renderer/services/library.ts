@@ -3,6 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 import persistantStore from '../util/persistantStore';
 import storeKeys from '@/common/constants/storeKeys.json';
 import { Category } from '@/common/models/types';
+import { ipcRenderer } from 'electron';
+import ipcChannels from '@/common/constants/ipcChannels.json';
+
 
 const fetchSeriesList = (): Series[] => {
   const val = persistantStore.read(`${storeKeys.LIBRARY.SERIES_LIST}`);
@@ -118,11 +121,8 @@ const validURL = (str: string): boolean => {
   return !!pattern.test(str);
 };
 
-const validFilePath = async (path: string): Promise<boolean> => {
-  return new Promise((resolve) => {
-    const validPathPattern = /^(\/[a-zA-Z0-9_-]+)+\/?$/;
-    resolve(validPathPattern.test(path));
-  });
+const validFilePath = async (filePath: string): Promise<boolean> => {
+  return ipcRenderer.invoke(ipcChannels.APP.VALIDATE_FILE_PATH, filePath);
 };
 
 export default {

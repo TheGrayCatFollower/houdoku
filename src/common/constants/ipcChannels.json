@@ -9,7 +9,9 @@
     "SHOW_RESTART_UPDATE_DIALOG": "show-restart-update-dialog",
     "SHOW_PERFORM_UPDATE_DIALOG": "show-perform-update-dialog",
     "READ_ENTIRE_FILE": "read-entire-file",
-    "CREATE_OBJECT_URL": "create-object-url"
+    "CREATE_OBJECT_URL": "create-object-url",
+    "COPY_TO_CLIPBOARD": "copy-to-clipboard",
+    "VALIDATE_FILE_PATH" : "validate-file-path"
   },
   "WINDOW": {
     "MINIMIZE": "window-minimize",
