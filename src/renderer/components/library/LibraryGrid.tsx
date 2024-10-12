@@ -53,6 +53,11 @@ const LibraryGrid: React.FC<Props> = (props: Props) => {
   const confirmRemoveSeries = useRecoilValue(confirmRemoveSeriesState);
   const [categoriesSubMenuOpen, setCategoriesSubMenuOpen] = useState(false);
 
+  // const [markFromToModalOpen, setMarkFromToModalOpen] = useState(false);
+  // const [currentSeries, setCurrentSeries] = useState<Series | null>(null);
+  // const [fromChapter, setFromChapter] = useState<number>(1);
+  // const [toChapter, setToChapter] = useState<number>(1);
+
   const viewFunc = (series: Series) => {
     goToSeries(series, setSeriesList, navigate);
   };
@@ -61,6 +66,20 @@ const LibraryGrid: React.FC<Props> = (props: Props) => {
     if (series.id) {
       const chapters = library.fetchChapters(series.id);
       markChapters(chapters, series, true, setChapterList, setSeries, chapterLanguages);
+      setSeriesList(library.fetchSeriesList());
+    }
+  };
+
+  const markFromToFunc = (series: Series , from: number , to: number) => {
+    if (series.id) {
+      const chapters = library.fetchChapters(series.id);
+
+      const filteredChapters = chapters.filter((chapter) => {
+        const chapterNumber = parseFloat(chapter.chapterNumber);
+        return chapterNumber >= from && chapterNumber <= to;
+      });
+      
+      markChapters(filteredChapters , series , true , setChapterList , setSeries , chapterLanguages);
       setSeriesList(library.fetchSeriesList());
     }
   };
