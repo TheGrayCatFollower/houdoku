@@ -24,11 +24,10 @@ import {
 } from '@/renderer/state/settingStates';
 import ExtensionImage from '../general/ExtensionImage';
 import * as ContextMenu from '@radix-ui/react-context-menu';
-import crypto from 'crypto';
 const { ipcRenderer } = require('electron');
 import ipcChannels from '@/common/constants/ipcChannels.json';
 import { v4 as uuidv4 } from 'uuid';
-import { showNotification, updateNotification } from '@mantine/notifications';
+import { showNotification} from '@mantine/notifications';
 
 const ROOT_ID = 'root';
 

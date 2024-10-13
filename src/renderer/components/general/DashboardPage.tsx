@@ -13,7 +13,7 @@ import { AppShell } from '@mantine/core';
 import SeriesDetails from '../library/SeriesDetails';
 import Search from '../search/Search';
 import routes from '@/common/constants/routes.json';
-import { importSeries, reloadSeriesList ,reloadSingle } from '@/renderer/features/library/utils';
+import { importSeries, reloadSeriesList} from '@/renderer/features/library/utils';
 import Settings from '../settings/Settings';
 import About from '../about/About';
 import Library from '../library/Library';
