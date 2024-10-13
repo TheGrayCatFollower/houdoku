@@ -105,8 +105,8 @@ const ReaderViewer: React.FC<Props> = (props: Props) => {
     };
 
     return (
-      <ContextMenu.Root key={`${num}}`}>
-        <ContextMenu.Trigger className={styles.ContextMenuTrigger}>
+      <ContextMenu.Root key={num}>
+        <ContextMenu.Trigger asChild>
           <ExtensionImage
             // @ts-expect-error ignoring ensured series prop in this context
             series={series}
@@ -144,7 +144,10 @@ const ReaderViewer: React.FC<Props> = (props: Props) => {
                 <ContextMenu.Item
                   style={{ paddingLeft: 25 }}
                   className={styles.ctxMenuItem}
-                  onClick={() => copyToClipboard(pageUrls[num - 1], "Url saved to clipboard")}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    copyToClipboard(pageUrls[num - 1], "Url saved to clipboard")
+                  }}
 
                 >
                   Copy image url
@@ -153,7 +156,9 @@ const ReaderViewer: React.FC<Props> = (props: Props) => {
                 <ContextMenu.Item
                   style={{ paddingLeft: 25 }}
                   className={styles.ctxMenuItem}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
+
                     generateMD5Hash(pageUrls[num - 1]).then(value => {
                       copyToClipboard(value, "Hash saved to clipboard");
                     })
@@ -212,6 +217,7 @@ const ReaderViewer: React.FC<Props> = (props: Props) => {
       </div>
     );
   };
+  
 
   /**
    * Get the page containers, with one per page image.

@@ -13,7 +13,7 @@ import { AppShell } from '@mantine/core';
 import SeriesDetails from '../library/SeriesDetails';
 import Search from '../search/Search';
 import routes from '@/common/constants/routes.json';
-import { importSeries, reloadSeriesList } from '@/renderer/features/library/utils';
+import { importSeries, reloadSeriesList ,reloadSingle } from '@/renderer/features/library/utils';
 import Settings from '../settings/Settings';
 import About from '../about/About';
 import Library from '../library/Library';
@@ -48,7 +48,7 @@ import {
 } from '@/renderer/features/library/chapterDownloadUtils';
 import { getDefaultDownloadDir } from '../settings/GeneralSettings';
 
-interface Props {}
+interface Props { }
 
 const DashboardPage: React.FC<Props> = () => {
   const setSeriesList = useSetRecoilState(seriesListState);
@@ -72,6 +72,7 @@ const DashboardPage: React.FC<Props> = () => {
     if (autoBackup) {
       createAutoBackup(autoBackupCount);
     }
+
     if (refreshOnStart && !completedStartReload && activeSeriesList.length > 0) {
       setCompletedStartReload(true);
       reloadSeriesList(
@@ -101,9 +102,11 @@ const DashboardPage: React.FC<Props> = () => {
         .catch((e) => {
           console.error(e);
         });
+
     }
   }, [activeSeriesList]);
 
+  // Handles the import qeueue
   useEffect(() => {
     if (!importing && importQueue.length > 0) {
       setImporting(true);
@@ -113,8 +116,24 @@ const DashboardPage: React.FC<Props> = () => {
       importSeries(task.series, chapterLanguages, task.getFirst)
         .then((addedSeries) => {
           setSeriesList(library.fetchSeriesList());
+
           setImporting(false);
-          if (!task.series.preview) downloadCover(addedSeries);
+          // if (!task.series.preview) downloadCover(addedSeries);
+          // the reload will run twice if there are no series in the library prior to this
+
+          if (!task.series.preview) downloadCover(addedSeries).finally(() => {
+            if (!completedStartReload)
+              return
+
+            reloadSeriesList(
+              library.fetchSeriesList(),
+              setSeriesList,
+              setReloadingSeriesList,
+              chapterLanguages,
+              categoryList,
+            );
+          });
+
         })
         .catch((e) => {
           console.error(e);

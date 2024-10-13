@@ -345,6 +345,51 @@ export async function reloadSeriesList(
   setReloadingSeriesList(false);
 }
 
+export async function reloadSingle(
+  series: Series,
+  setSeriesList: (seriesList: Series[]) => void,
+  setReloadingSeries: (reloadingSeries: boolean) => void,
+  chapterLanguages: LanguageKey[],
+) {
+  console.debug(`Reloading single series: ${series.title}`);
+  setReloadingSeries(true);
+
+  const notificationId = uuidv4();
+  showNotification({ id: notificationId, message: `Refreshing "${series.title}"...`, loading: true });
+
+  // Reload the series
+  const ret = await reloadSeries(series, chapterLanguages);
+  if (ret instanceof Error) {
+    console.error(ret);
+    updateNotification({
+      id: notificationId,
+      title: `Failed to refresh "${series.title}"`,
+      message: `An error occurred while reloading the series.`,
+      color: 'red',
+      icon: React.createElement(IconX, { size: 16 }),
+      loading: false,
+      autoClose: true,
+    });
+  } else {
+    // Successfully reloaded the series
+    updateNotification({
+      id: notificationId,
+      title: `Series refreshed`,
+      message: `Successfully reloaded the series "${series.title}".`,
+      color: 'teal',
+      icon: React.createElement(IconCheck, { size: 16 }),
+      loading: false,
+      autoClose: true,
+    });
+  }
+
+  // Update the series list after reloading the single series
+  setSeriesList(library.fetchSeriesList());
+  setReloadingSeries(false);
+}
+
+
+
 export function updateSeries(series: Series) {
   const newSeries = library.upsertSeries(series);
   return downloadCover(newSeries);

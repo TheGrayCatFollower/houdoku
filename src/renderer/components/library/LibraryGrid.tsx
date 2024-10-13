@@ -1,6 +1,6 @@
 const fs = require('fs');
 import path from 'path';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 const { ipcRenderer } = require('electron');
 import { Series } from '@tiyo/common';
 import { Overlay, SimpleGrid, Title } from '@mantine/core';
@@ -213,7 +213,7 @@ const LibraryGrid: React.FC<Props> = (props: Props) => {
                     className={styles.ctxMenuItem}
                     onClick={() => markFunc(series)}
                   >
-                    Mark (from , to)
+                    Mark Range
                   </ContextMenu.Item>
                   <ContextMenu.Item
                     className={styles.ctxMenuItem}

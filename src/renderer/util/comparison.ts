@@ -66,12 +66,13 @@ function consolidateAndSortChapters(chapterList: Chapter[]): Chapter[] {
     if (chapter === undefined) {
       [chapter] = groupedChapters;
     }
+
     if (Number.isInteger(parseFloat(chapter.chapterNumber)))
       chapters.push(chapter);
   });
 
   return chapters.sort(
-    (a: Chapter, b: Chapter) => parseFloat(a.chapterNumber) - parseFloat(b.chapterNumber),
+    (a: Chapter, b: Chapter) => parseInt(a.chapterNumber) - parseInt(b.chapterNumber),
   );
 }
 
@@ -85,31 +86,21 @@ function consolidateAndSortChapters(chapterList: Chapter[]): Chapter[] {
 export function getNumberUnreadChapters(chapterList: Chapter[]): number {
   let highestRead = 0;
   let highestReleased = 0;
-  let previousChapNumber = 0;
-  let cumulativeGaps = 1;
 
   const chapters = consolidateAndSortChapters(chapterList);
-  console.log(chapters);
 
-  chapters.forEach((chapter: Chapter, index: number) => {
-    let absoluteNumber = cumulativeGaps + index;
-    const chapterNumber = parseFloat(chapter.chapterNumber);
+  chapters.forEach((chapter: Chapter) => {
+    const chapterNumber = parseInt(chapter.chapterNumber);
 
-    const gap = Math.ceil(chapterNumber - previousChapNumber) - 1;
-    if (gap > 1) {
-      // A gap between chapters was found. Account for this in the absolute numbers
-      absoluteNumber += gap;
-      cumulativeGaps += gap;
+    if (!isNaN(chapterNumber)) {
+      if (chapterNumber > highestReleased) {
+        highestReleased = chapterNumber;
+      }
+
+      if (chapter.read && chapterNumber > highestRead) {
+        highestRead = chapterNumber;
+      }
     }
-
-    if (chapter.read && absoluteNumber > highestRead) {
-      highestRead = absoluteNumber;
-    }
-    if (absoluteNumber > highestReleased) {
-      highestReleased = absoluteNumber;
-    }
-
-    previousChapNumber = chapterNumber;
   });
 
   return Math.ceil(highestReleased - highestRead);
