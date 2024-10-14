@@ -104,78 +104,79 @@ const ReaderViewer: React.FC<Props> = (props: Props) => {
     };
 
     return (
-      <ContextMenu.Root key={num}>
+      <ContextMenu.Root key={`${num}`}>
         <ContextMenu.Trigger asChild>
-          <ExtensionImage
-            // @ts-expect-error ignoring ensured series prop in this context
-            series={series}
-            key={num}
-            data-num={num}
-            url={pageUrls[num - 1]}
-            alt={`Page ${num}`}
-            style={showing ? {} : { display: 'none' }}
-            loadingDisplay="spinner"
-            allowRetry
-            onLoad={props.updatePageGroupList}
-            className={`
-      ${styles.pageImage}
-      ${optimizeContrast ? styles.optimizeContrast : ''}
-      ${isLeft ? styles.left : ''}
-      ${isRight ? styles.right : ''}
-      ${fitContainToWidth ? styles.containWidth : ''}
-      ${fitContainToHeight ? styles.containHeight : ''}
-      ${fitStretch && (fitContainToWidth || fitContainToHeight) ? styles.grow : ''}
-      ${(pageStyle === PageStyle.Double || pageStyle === PageStyle.LongStrip) && pageGap
-                ? styles.gap
-                : ''
-              }
-    `}
-          />
+          <span style={{ display: 'contents' }}>
+            <ExtensionImage
+              // @ts-expect-error ignoring ensured series prop in this context
+              series={series}
+              key={num}
+              data-num={num}
+              url={pageUrls[num - 1]}
+              alt={`Page ${num}`}
+              style={showing ? {} : { display: 'none' }}
+              loadingDisplay="spinner"
+              allowRetry
+              onLoad={props.updatePageGroupList}
+              className={`
+                ${styles.pageImage}
+                ${optimizeContrast ? styles.optimizeContrast : ''}
+                ${isLeft ? styles.left : ''}
+                ${isRight ? styles.right : ''}
+                ${fitContainToWidth ? styles.containWidth : ''}
+                ${fitContainToHeight ? styles.containHeight : ''}
+                ${
+                  fitStretch && (fitContainToWidth || fitContainToHeight)
+                    ? styles.grow
+                    : ''
+                }
+                ${
+                  (pageStyle === PageStyle.Double || pageStyle === PageStyle.LongStrip) &&
+                  pageGap
+                    ? styles.gap
+                    : ''
+                }
+              `}
+            />
+          </span>
         </ContextMenu.Trigger>
-
+    
         <ContextMenu.Portal>
           <ContextMenu.Content
             className={styles.ctxMenuContent}
             style={{ width: 220 }}
           >
-            {
-              <>
-                <ContextMenu.Item
-                  style={{ paddingLeft: 25 }}
-                  className={styles.ctxMenuItem}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    copyToClipboard(pageUrls[num - 1], "Url saved to clipboard")
-                  }}
-
-                >
-                  Copy image url
-                </ContextMenu.Item>
-
-                <ContextMenu.Item
-                  style={{ paddingLeft: 25 }}
-                  className={styles.ctxMenuItem}
-                  onClick={(e) => {
-                    e.stopPropagation();
-
-                    generateMD5Hash(pageUrls[num - 1]).then(value => {
-                      copyToClipboard(value, "Hash saved to clipboard");
-                    })
-                  }}
-                >
-                  Copy image hash
-                </ContextMenu.Item>
-
-
-              </>
-
-            }
-
+            <>
+              <ContextMenu.Item
+                style={{ paddingLeft: 25 }}
+                className={styles.ctxMenuItem}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  copyToClipboard(pageUrls[num - 1], 'Url saved to clipboard');
+                }}
+              >
+                Copy image url
+              </ContextMenu.Item>
+    
+              <ContextMenu.Item
+                style={{ paddingLeft: 25 }}
+                className={styles.ctxMenuItem}
+                onClick={(e) => {
+                  e.stopPropagation();
+    
+                  generateMD5Hash(pageUrls[num - 1]).then((value) => {
+                    copyToClipboard(value, 'Hash saved to clipboard');
+                  });
+                }}
+              >
+                Copy image hash
+              </ContextMenu.Item>
+            </>
           </ContextMenu.Content>
         </ContextMenu.Portal>
       </ContextMenu.Root>
-
     );
+    
   };
 
   /**

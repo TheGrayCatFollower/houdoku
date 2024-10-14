@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { Modal, Button, TextInput, Checkbox } from '@mantine/core';
 import { markChapters } from '@/renderer/features/library/utils';
-import { chapterListState, seriesListState, seriesState } from '@/renderer/state/libraryStates';
+import { chapterListState, seriesListState, seriesState , sortedFilteredChapterListState} from '@/renderer/state/libraryStates';
 import library from '@/renderer/services/library';
 import {
     chapterLanguagesState,
@@ -48,6 +48,7 @@ const MarkModal: React.FC<Props> = (props: Props) => {
 
 
     useEffect(() => {
+        setSeriesList(library.fetchSeriesList());
         if (props.series && props.series.id) {
             const chapters = library.fetchChapters(props.series.id);
 

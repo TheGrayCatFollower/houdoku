@@ -93,6 +93,12 @@ export async function downloadAll(
   downloaderClient.start();
 }
 
+// function filterChapters(
+//   chapterList: Chapter[]
+//  ){
+
+// }
+
 /**
  * The function `DownloadUnreadChapters` downloads a specified number of unread chapters from a list of
  * series, filtering out already downloaded chapters.
@@ -120,30 +126,43 @@ export async function DownloadUnreadChapters(
       library.validFilePath(series.sourceId)
         .then(async (result) => {
           if (result === false) {
-            const serieChapters = library.fetchChapters(series.id!)
+            let seriesChapters = library.fetchChapters(series.id!)
               .filter((x) => !x.read)
               .filter((x) => chapterLanguages.includes(x.languageKey))
-              .sort((a, b) => parseFloat(a.chapterNumber) - parseFloat(b.chapterNumber))
-              .slice(0, count);
+              .sort((a, b) => parseFloat(a.chapterNumber) - parseFloat(b.chapterNumber));
+
+            const uniqueChapters = new Map();
+
+            seriesChapters = seriesChapters.filter((chapter) => {
+              if (!uniqueChapters.has(chapter.chapterNumber)) {
+                uniqueChapters.set(chapter.chapterNumber, chapter);
+                return true;
+              }
+              return false;
+            });
+
+            seriesChapters = seriesChapters.slice(0, count);
+
 
             const nonDownloadedChapters = await Promise.all(
-              serieChapters.map(async (x) => {
+              seriesChapters.map(async (x) => {
                 const r = await ipcRenderer.invoke(
-                  ipcChannels.FILESYSTEM.GET_CHAPTER_DOWNLOADED,series, x, downloadsDir
+                  ipcChannels.FILESYSTEM.GET_CHAPTER_DOWNLOADED, series, x, downloadsDir
                 );
                 return r !== true ? x : null;
               })
             );
 
             const filteredNonDownloadedChapters = nonDownloadedChapters.filter(Boolean);
+
             downloaderClient.add(
               filteredNonDownloadedChapters.map(
                 (chapter) =>
-                  ({
-                    chapter,
-                    series,
-                    downloadsDir,
-                  } as DownloadTask)
+                ({
+                  chapter,
+                  series,
+                  downloadsDir,
+                } as DownloadTask)
               )
             );
 
@@ -181,7 +200,7 @@ export async function DeleteReadChapters(seriesList: Series[], downloadsDir: str
       const DownloadedChapters = serieChapters.filter((chapter) => downloadedChapters[chapter.id!]);
 
       DownloadedChapters.forEach((x) => {
-        ipcRenderer.invoke(ipcChannels.FILESYSTEM.DELETE_DOWNLOADED_CHAPTER , series , x, downloadsDir);
+        ipcRenderer.invoke(ipcChannels.FILESYSTEM.DELETE_DOWNLOADED_CHAPTER, series, x, downloadsDir);
       });
     });
 }

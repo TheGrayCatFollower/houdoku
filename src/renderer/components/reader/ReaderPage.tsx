@@ -346,7 +346,7 @@ const ReaderPage: React.FC<Props> = () => {
     if (OnScrollingChaptersDownloadUnread) {
       DownloadUnreadChapters(
         seriesArr,
-        customDownloadsDir || String(getDefaultDownloadDir()),
+        customDownloadsDir || defaultDownloadsDir,
         chapterLanguages,
         false,
         OnStartUpDownloadUnreadCount

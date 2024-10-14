@@ -42,6 +42,8 @@ import { getDefaultDownloadDir } from '../settings/GeneralSettings';
 
 type Props = unknown;
 
+const defaultDownloadsDir = await ipcRenderer.invoke(ipcChannels.GET_PATH.DEFAULT_DOWNLOADS_DIR);
+
 const SeriesDetails: React.FC<Props> = () => {
   const { id } = useParams<{ id: string }>();
   let series: Series = library.fetchSeries(id!)!;
@@ -91,12 +93,12 @@ const SeriesDetails: React.FC<Props> = () => {
     loadContent();
     seriesArr[0] = series;
     if (OnSeriesDetailsDeleteRead) {
-      DeleteReadChapters(seriesArr, customDownloadsDir || String(getDefaultDownloadDir()));
+      DeleteReadChapters(seriesArr, customDownloadsDir || defaultDownloadsDir);
     }
     if (OnSeriesDetailsDownloadUnread) {
       DownloadUnreadChapters(
         seriesArr,
-        customDownloadsDir || String(getDefaultDownloadDir()),
+        customDownloadsDir || defaultDownloadsDir,
         chapterLanguages,
         false,
         OnStartUpDownloadUnreadCount

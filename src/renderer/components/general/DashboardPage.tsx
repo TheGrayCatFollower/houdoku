@@ -50,6 +50,11 @@ import { getDefaultDownloadDir } from '../settings/GeneralSettings';
 
 interface Props { }
 
+const { ipcRenderer } = require('electron');
+import ipcChannels from '@/common/constants/ipcChannels.json';
+
+const defaultDownloadsDir = await ipcRenderer.invoke(ipcChannels.GET_PATH.DEFAULT_DOWNLOADS_DIR);
+
 const DashboardPage: React.FC<Props> = () => {
   const setSeriesList = useSetRecoilState(seriesListState);
   const activeSeriesList = useRecoilValue(activeSeriesListState);
@@ -86,13 +91,13 @@ const DashboardPage: React.FC<Props> = () => {
           if (OnStartUpDeleteRead) {
             DeleteReadChapters(
               library.fetchSeriesList(),
-              customDownloadsDir || String(getDefaultDownloadDir()),
+              customDownloadsDir || defaultDownloadsDir,
             );
           }
           if (OnStartUpDownloadUnread) {
             DownloadUnreadChapters(
               library.fetchSeriesList(),
-              customDownloadsDir || String(getDefaultDownloadDir()),
+              customDownloadsDir || defaultDownloadsDir,
               chapterLanguages,
               false,
               OnStartUpDownloadUnreadCount,
