@@ -240,6 +240,7 @@ const ReaderPage: React.FC<Props> = () => {
       ipcRenderer.invoke(ipcChannels.INTEGRATION.DISCORD_SET_ACTIVITY, series, chapter);
     }
 
+    // fetch downloaded chapters url
     if (
       await ipcRenderer.invoke(
         ipcChannels.FILESYSTEM.GET_CHAPTER_DOWNLOADED,
@@ -252,6 +253,7 @@ const ReaderPage: React.FC<Props> = () => {
       return;
     }
 
+    // fetch page url's from extension
     let newPageUrls: string[] = await ipcRenderer
       .invoke(
         ipcChannels.EXTENSION.GET_PAGE_REQUESTER_DATA,
