@@ -45,9 +45,11 @@ const ExtensionImage: React.FC<Props> = (props: Props) => {
             console.error(e);
             setIsError(true);
           });
-      } else {
-        setResolvedUrl(props.url);
       }
+      else if(props.url.startsWith('atom'))
+        setResolvedUrl(props.url.replace(/\\/g, '/'));
+      else 
+        setResolvedUrl(props.url);
     }
   };
 

@@ -194,6 +194,7 @@ const ReaderPage: React.FC<Props> = () => {
       customDownloadsDir || defaultDownloadsDir,
     );
 
+    // get chapters from filesystem extenstion
     let newPageUrls: string[] = await ipcRenderer
       .invoke(
         ipcChannels.EXTENSION.GET_PAGE_REQUESTER_DATA,
@@ -204,6 +205,7 @@ const ReaderPage: React.FC<Props> = () => {
       .then((pageRequesterData: PageRequesterData) =>
         ipcRenderer.invoke(ipcChannels.EXTENSION.GET_PAGE_URLS, FS_METADATA.id, pageRequesterData),
       );
+    
     newPageUrls = newPageUrls.map((pageUrl) => `atom://${pageUrl}`);
 
     setPageUrls(newPageUrls);

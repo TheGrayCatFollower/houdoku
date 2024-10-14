@@ -1,6 +1,6 @@
 const fs = require('fs');
 import path from 'path';
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 const { ipcRenderer } = require('electron');
 import { Series } from '@tiyo/common';
 import { Overlay, SimpleGrid, Title } from '@mantine/core';

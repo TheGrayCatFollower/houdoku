@@ -134,7 +134,6 @@ app
     loadPlugins(spoofWindow!);
 
     protocol.handle('atom', async (req) => {
-      console.info("test error");
       try {
         const requestUrl = new URL(req.url);
         let pathname;
